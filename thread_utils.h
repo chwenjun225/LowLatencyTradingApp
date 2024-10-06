@@ -25,7 +25,7 @@ namespace Common {
 	) noexcept {
 		auto t = new std::thread([&]() {
 			if (core_id >= 0 && !setThreadCore(core_id)) {
-				std::cerr << "Failed to set core affinity for " name << " " << pthread_self() << " to " << core_id << std::endl;
+				std::cerr << "Failed to set core affinity for " << name << " " << pthread_self() << " to " << core_id << std::endl;
 				exit(EXIT_FAILURE);
 			}
 			std::cerr << "Set core affinity for " << name << " " << pthread_self() << " to " << core_id << std::endl;

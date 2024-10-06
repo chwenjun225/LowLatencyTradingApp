@@ -1,9 +1,5 @@
 #include "thread_utils.h"
-auto dummyFunction(
-	int a,
-	int b,
-	bool sleep
-) {
+auto dummyFunction(int a, int b, bool sleep) {
 	std::cout << "dummyFunction(" << a << "," << b << ")" << std::endl;
 	std::cout << "dummyFunction output=" << a + b << std::endl;
 	if (sleep) {
