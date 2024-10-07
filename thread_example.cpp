@@ -16,6 +16,6 @@ int main(int, char**) {
 	std::cout << "main waiting for threads to be done." << std::endl;
 	t1->join();
 	t2->join();
-	std::cout << "main exiting." << std::endl;
+	std::cout << "main exiting" << std::endl;
 	return 0; 
 }
