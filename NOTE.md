@@ -54,3 +54,20 @@ một máy client có khả năng thiết lập kết nối TCP với máy chủ
 số chính xác. 
 - Phương thức này dùng để tạo ra các socket listener, receiver và sender 
 để giao tiếp qua các giao thức UDP và TCP.
+
+## Chapter 5: Thiết kế hệ sinh thái giao dịch 
+- Chương trước đã nhảy vào một số phát triển thực hành, xây dựng cơ bản 
+ các block, với tiêu chí độ trễ thấp và chính xác.
+- Trước tiên, hãy thảo luận về thiết kế và kiến trúc cấp cao của các thành
+phần hoặc ứng dụng có độ trễ thấp khác nhau mà chúng ta sẽ xây dựng cho hệ 
+sinh thái giao dịch điện tử đầu cuối.
+- Trong chương này, chúng ta sẽ:
+    - Hiểu các bố trí của hệ sinh thái giao dịch điện tử
+    - Thiết kế công cụ kết hợp C++ trong sàn giao dịch 
+    - Hiểu cách trao đổi xuất bản thông tin cho người tham gia 
+    - Xây dựng giao diện cho user và sàn giao dịch 
+    - Thiết kế framework cho các thuật toán giao dịch C++ độ trễ thấp
+> Lưu ý: Tập trung vào các nguyên tắc khoa học máy tính và C++ và ít hơn 
+vào các chi tiết của hệ sinh thái giao dịch. 
+
+# TODO: Dừng lại tất cả, cần hoàn thành powpoint và luận văn trước 
