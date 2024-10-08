@@ -44,3 +44,12 @@ vào log file.
 - Trước tiên cần xác định khối thông tin cơ bản được chuyển qua hàng đợi
 không khóa từ luồng nhạy cảm với hiệu xuất sang luồng logger.
 - ...
+### 5. Lập trình mạng C++ sử dụng socket 
+- Xây dựng framework để xử lý lập trình mạng bằng cách sử dựng các socket 
+Unix. 
+- Sử dụng framework này để xây dựng một máy chủ bắt các kết nối TCP đến và
+một máy client có khả năng thiết lập kết nối TCP với máy chủ.
+#### 5.1. Xây dựng API socket cơ bản 
+- Mục tiêu là tạo ra một cơ chế socket mạng và khởi tạo nó với các tham
+số chính xác. 
+- Phương thức này dùng để tạo ra các socket listener, receiver
