@@ -52,4 +52,5 @@ một máy client có khả năng thiết lập kết nối TCP với máy chủ
 #### 5.1. Xây dựng API socket cơ bản 
 - Mục tiêu là tạo ra một cơ chế socket mạng và khởi tạo nó với các tham
 số chính xác. 
-- Phương thức này dùng để tạo ra các socket listener, receiver
+- Phương thức này dùng để tạo ra các socket listener, receiver và sender 
+để giao tiếp qua các giao thức UDP và TCP.
