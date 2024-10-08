@@ -10,7 +10,7 @@ auto consumeFunction(LFQueue<MyStruct>* lfq) {
 
     while (lfq->size()) {
         const auto d = lfq->getNextToRead();
-        lfq->updateNextToRead();
+        lfq->getNextToRead();
 
         std::cout << "consumeFunction read elem:" << d->d_[0] << "," << d->d_[1] << "," << d->d_[2] << "lfq-size:" << lfq->size() << std::endl;
         std::this_thread::sleep_for(1s);
@@ -33,4 +33,3 @@ int main(int, char **) {
     std::cout << "main exiting" << std::endl;
     return 0; 
 }
-

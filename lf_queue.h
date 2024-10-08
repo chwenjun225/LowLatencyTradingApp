@@ -1,7 +1,9 @@
 #pragma once 
+
 #include <iostream>
 #include <vector>
 #include <atomic>
+
 #include "macros.h"
 
 namespace Common {
@@ -19,7 +21,7 @@ namespace Common {
         auto getNextToRead() const noexcept -> const T * {
             return (size() ? &store_[next_read_index_] : nullptr); 
         }
-        auto updateNextToRead() const noexcept -> const T * {
+        auto updateReadIndex() noexcept {
             next_read_index_ = (next_read_index_ + 1) % store_.size();
             ASSERT(num_elements_ != 0, "Read an invalid element in:" + std::to_string(pthread_self()));
             num_elements_ = num_elements_ - 1;
