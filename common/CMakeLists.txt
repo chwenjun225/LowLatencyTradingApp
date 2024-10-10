@@ -6,5 +6,7 @@ set(CMAKE_VERBOSE_MAKEFILE on)
 file(GLOB SOURCES "*.cpp")
 
 include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/exchange)
+include_directories(${PROJECT_SOURCE_DIR}/common)
 
 add_library(libcommon STATIC ${SOURCES})
