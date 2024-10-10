@@ -67,6 +67,5 @@ namespace Exchange {
     };
 
     #pragma pack(pop)
-
-    typedef Common::LFQueue<Exchange::MEMarketUpdate> MEMarketUpdateLFQueue;
+        typedef Common::LFQueue<Exchange::MEMarketUpdate> MEMarketUpdateLFQueue;
 }
