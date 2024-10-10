@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <limits>
 
-#include "common/macros.h"
+#include "macros.h"
 
 namespace Common {
     constexpr size_t ME_MAX_TICKERS = 8;
