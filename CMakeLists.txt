@@ -16,6 +16,7 @@ list(APPEND LIBS pthread)
 
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/exchange)
+include_directories(${PROJECT_SOURCE_DIR}/common)
 
 add_executable(exchange_main exchange/exchange_main.cpp)
 target_link_libraries(exchange_main PUBLIC ${LIBS})
