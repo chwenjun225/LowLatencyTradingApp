@@ -71,3 +71,18 @@ sinh thái giao dịch điện tử đầu cuối.
 vào các chi tiết của hệ sinh thái giao dịch. 
 
 # TODO: Dừng lại tất cả, cần hoàn thành powpoint và luận văn trước 
+
+## Chapter 6: Building the C++ Matching Engine 
+- Trong chương này, chúng ta sẽ:
+    - Xác định các hoạt động và tương tác trong công cụ kết hợp 
+    - Xây dựng công cụ kết hợp và trao đổi dữ liệu bên ngoài 
+    - Xây dựng sổ lệnh và khớp lệnh 
+
+- Xác định một vài điều cơ bản 
+    - **OrderId**: Xác định đơn hàng
+    - **TickerId**: Xác định công cụ giao dịch 
+    - **ClientId**: Xác định các khách hàng khác nhau 
+    - **Price**: Giá tiền của đơn hàng 
+    - **Qty**: Số lượng để giữ giá trị cho đơn đặt hàng 
+    - **Priority**: Ưu tiên, nắm bắt vị trí của một lệnh trong hàng đợi **(FIFO)** 
+    - **Side**: Để biểu thị bên mua / bán của một đơn đặt hàng 
