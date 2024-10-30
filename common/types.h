@@ -23,7 +23,7 @@ namespace Common {
     constexpr size_t ME_MAX_NUM_CLIENTS = 256; 
 
     // Max number of orders per trading client. 
-    constexpr size_t ME_MAX_ORDER_IDS  = 1024 * 1024;
+    constexpr size_t ME_MAX_ORDER_IDS  = 1024 * 1024; 
 
     // Max price level depth in the order books. 
     constexpr size_t ME_MAX_PRICE_LEVELS = 256;
