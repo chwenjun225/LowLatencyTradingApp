@@ -12,6 +12,7 @@ namespace Common
     template<typename T>
     class LFQueue final 
     {
+        // Initializing the lock-free queue
         public:
             explicit LFQueue(std::size_t num_elems) :
                 store_(num_elems, T()) /* pre-allocation of vector storage. */ {}
@@ -47,7 +48,8 @@ namespace Common
             LFQueue(const LFQueue &&) = delete;
             LFQueue &operator=(const LFQueue &) = delete;
             LFQueue &operator=(const LFQueue &&) = delete;
-
+        
+        // Designing lock-free queue storage
         private:
             // Define the data members for class LFQueue
             // Underlying container of data accessed in FIFO order.
