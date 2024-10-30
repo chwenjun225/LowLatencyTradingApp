@@ -94,7 +94,7 @@ namespace Common {
         BUY = 1, 
         SELL = -1 
     }; 
-    inline auto sideTostring(Side side) -> std::string {
+    inline auto sideToString(Side side) -> std::string {
         switch (side) {
             case Side::BUY:
                 return "BUY";
