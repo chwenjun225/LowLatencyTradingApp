@@ -8,7 +8,7 @@
 // sentinel method to signify invalid values 
 namespace Common {
     // Defining some limits and constraints
-    constexpr size_t LOG_QUEUE_SIZE = 8 * 1024 * 1024;
+    // constexpr size_t LOG_QUEUE_SIZE = 8 * 1024 * 1024;
 
     // Constants used across the ecosystem to represent upper bounds on various containers.
     // Trading instruments / TickerIds from [0, ME_MAX_TICKERS]. 
