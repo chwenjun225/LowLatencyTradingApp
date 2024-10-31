@@ -42,26 +42,28 @@ namespace Exchange {
 	private:
 		TickerId ticker_id_ = TickerId_INVALID;
 
-		/// The parent matching engine instance, used to publish market data and client responses.
+		// The parent matching engine instance, used to publish market 
+		// data and client responses.
 		MatchingEngine *matching_engine_ = nullptr;
 
-		/// Hash map from ClientId -> OrderId -> MEOrder.
+		// Hash map from ClientId -> OrderId -> MEOrder.
 		ClientOrderHashMap cid_oid_to_order_;
 
-		/// Memory pool to manage MEOrdersAtPrice objects.
+		// Memory pool to manage MEOrdersAtPrice objects.
 		MemPool<MEOrdersAtPrice> orders_at_price_pool_;
 
-		/// Pointers to beginning / best prices / top of book of buy and sell price levels.
+		// Pointers to beginning / best prices / top of book of buy and 
+		// sell price levels.
 		MEOrdersAtPrice *bids_by_price_ = nullptr;
 		MEOrdersAtPrice *asks_by_price_ = nullptr;
 
-		/// Hash map from Price -> MEOrdersAtPrice.
+		// Hash map from Price -> MEOrdersAtPrice.
 		OrdersAtPriceHashMap price_orders_at_price_;
 
-		/// Memory pool to manage MEOrder objects.
+		// Memory pool to manage MEOrder objects.
 		MemPool<MEOrder> order_pool_;
 
-		/// These are used to publish client responses and market updates.
+		// These are used to publish client responses and market updates.
 		MEClientResponse client_response_;
 		MEMarketUpdate market_update_;
 
@@ -223,6 +225,6 @@ namespace Exchange {
 			cid_oid_to_order_.at(order->client_id_).at(order->client_order_id_) = order;
 		}
 	};
-	/// A hash map from TickerId -> MEOrderBook.
+	// A hash map from TickerId -> MEOrderBook.
 	typedef std::array<MEOrderBook *, ME_MAX_TICKERS> OrderBookHashMap;
 }

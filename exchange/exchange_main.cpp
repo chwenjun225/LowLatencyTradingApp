@@ -1,5 +1,4 @@
 #include <csignal>
-
 #include "matcher/matching_engine.h"
 
 Common::Logger* logger = nullptr;
