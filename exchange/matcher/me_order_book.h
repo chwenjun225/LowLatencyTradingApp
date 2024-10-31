@@ -152,9 +152,9 @@ namespace Exchange {
 			price_orders_at_price_.at(priceToIndex(price)) = nullptr;
 
 			orders_at_price_pool_.deallocate(orders_at_price);
-			}
+		}
 
-			auto getNextPriority(Price price) noexcept {
+		auto getNextPriority(Price price) noexcept {
 			const auto orders_at_price = getOrdersAtPrice(price);
 			if (!orders_at_price)
 				return 1lu;
@@ -165,11 +165,20 @@ namespace Exchange {
 		/// Match a new aggressive order with the provided parameters against a passive order held in the bid_itr object and generate client responses and market updates for the match.
 		/// It will update the passive order (bid_itr) based on the match and possibly remove it if fully matched.
 		/// It will return remaining quantity on the aggressive order in the leaves_qty parameter.
-		auto match(TickerId ticker_id, ClientId client_id, Side side, OrderId client_order_id, OrderId new_market_order_id, MEOrder* bid_itr, Qty* leaves_qty) noexcept;
+		auto match(
+			TickerId ticker_id,
+			ClientId client_id, Side side, 
+			OrderId client_order_id, 
+			OrderId new_market_order_id, 
+			MEOrder* bid_itr, Qty* leaves_qty) noexcept;
 
 		/// Check if a new order with the provided attributes would match against existing passive orders on the other side of the order book.
 		/// This will call the match() method to perform the match if there is a match to be made and return the quantity remaining if any on this new order.
-		auto checkForMatch(ClientId client_id, OrderId client_order_id, TickerId ticker_id, Side side, Price price, Qty qty, Qty new_market_order_id) noexcept;
+		auto checkForMatch(
+			ClientId client_id, 
+			OrderId client_order_id, 
+			TickerId ticker_id, Side side, Price price, 
+			Qty qty, Qty new_market_order_id) noexcept;
 
 		/// Remove and de-allocate provided order from the containers.
 		auto removeOrder(MEOrder *order) noexcept {
@@ -205,7 +214,6 @@ namespace Exchange {
 				addOrdersAtPrice(new_orders_at_price);
 			} else {
 				auto first_order = (orders_at_price ? orders_at_price->first_me_order_ : nullptr);
-
 				first_order->prev_order_->next_order_ = order;
 				order->prev_order_ = first_order->prev_order_;
 				order->next_order_ = first_order;
@@ -215,7 +223,6 @@ namespace Exchange {
 			cid_oid_to_order_.at(order->client_id_).at(order->client_order_id_) = order;
 		}
 	};
-
 	/// A hash map from TickerId -> MEOrderBook.
 	typedef std::array<MEOrderBook *, ME_MAX_TICKERS> OrderBookHashMap;
 }
