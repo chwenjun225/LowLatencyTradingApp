@@ -37,7 +37,9 @@ namespace Exchange {
 
                 tcp_server_.sendAndRecv();
 
-                for (auto client_response = outgoing_responses_->getNextToRead(); outgoing_responses_->size() && client_response; client_response = outgoing_responses_->getNextToRead()) {
+                for (auto client_response = outgoing_responses_->getNextToRead(); 
+                    outgoing_responses_->size() && client_response; 
+                    client_response = outgoing_responses_->getNextToRead()) {
                 auto &next_outgoing_seq_num = cid_next_outgoing_seq_num_[client_response->client_id_];
                 logger_.log(
                     "%:% %() % Processing cid:% seq:% %\n", 

@@ -1,28 +1,40 @@
-#pragma once
-
-#include <functional>
-
-#include "common/thread_utils.h"
-#include "common/macros.h"
-#include "common/tcp_server.h"
-
-#include "order_server/client_request.h"
-#include "order_server/client_response.h"
-#include "order_server/fifo_sequencer.h"
+#include "order_server.h"
 
 namespace Exchange {
-    class OrderServer {
-        private:
-            const std::string iface_;
-            const int port_ = 0;
-            ClientResponseLFQueue *outgoing_responses_ = nullptr;
-            volatile bool run_ = false;
-            std::string time_str_;
-            Logger logger_;
-            std::array<size_t, ME_MAX_NUM_CLIENTS> cid_next_outgoing_seq_num_;
-            std::array<size_t, ME_MAX_NUM_CLIENTS> cid_next_exp_seq_num_;
-            std::array<Common::TCPSocket *, ME_MAX_NUM_CLIENTS> cid_tcp_socket_;
-            Common::TCPServer tcp_server_;
-            FIFOSequencer fifo_sequencer_;
-    };
+    OrderServer::OrderServer(
+        ClientRequestLFQueue *client_requests, 
+        ClientResponseLFQueue *client_responses, 
+        const std::string &iface, 
+        int port) : iface_(iface), 
+                    port_(port), 
+                    outgoing_responses_(client_responses), 
+                    logger_("exchange_order_server.log"),
+                    tcp_server_(logger_), 
+                    fifo_sequencer_(client_requests, &logger_) {
+                        cid_next_outgoing_seq_num_.fill(1);
+                        cid_next_exp_seq_num_.fill(1);
+                        cid_tcp_socket_.fill(nullptr);
+
+                        tcp_server_.recv_callback_ = [this](auto socket, auto rx_time) { 
+                            recvCallback(socket, rx_time); 
+                        };
+                        tcp_server_.recv_finished_callback_ = [this]() {
+                            recvFinishedCallback(); 
+                        };
+                    }
+    OrderServer::~OrderServer() {
+        stop();
+        using namespace std::literals::chrono_literals;
+        std::this_thread::sleep_for(1s);
+    }
+    auto OrderServer::start() -> void {
+        run_ = true;
+        tcp_server_.listen(iface_, port_);
+        ASSERT(Common::createAndStartThread(-1, "Exchange/OrderServer", [this]() { 
+            run(); 
+        }) != nullptr, "Failed to start OrderServer thread.");
+    }
+    auto OrderServer::stop() -> void {
+        run_ = false;
+    }
 }
