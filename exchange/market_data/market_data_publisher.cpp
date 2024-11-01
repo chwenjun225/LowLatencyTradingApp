@@ -15,7 +15,8 @@ namespace Exchange {
             ASSERT(
                 incremental_socket_.init(
                     incremental_ip, iface, 
-                    incremental_port, /*is_listening*/ false
+                    incremental_port, 
+                    /*is_listening*/ false
                 ) >= 0,
                 "Unable to create incremental mcast socket. error:" + std::string(std::strerror(errno))
             );

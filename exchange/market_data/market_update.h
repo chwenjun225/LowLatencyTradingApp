@@ -18,6 +18,8 @@ namespace Exchange {
 	}; 
 	inline std::string marketUpdateTypeToString(MarketUpdateType type) {
 		switch (type) {
+			case MarketUpdateType::CLEAR:
+				return "CLEAR";
 			case MarketUpdateType::ADD:
 				return "ADD";
 			case MarketUpdateType::MODIFY:
@@ -26,6 +28,10 @@ namespace Exchange {
 				return "CANCEL";
 			case MarketUpdateType::TRADE:
 				return "TRADE";
+			case MarketUpdateType::SNAPSHOT_START:
+				return "SNAPSHOT_START";
+			case MarketUpdateType::SNAPSHOT_END:
+				return "SNAPSHOT_END";
 			case MarketUpdateType::INVALID:
 				return "INVALID";
 		}
