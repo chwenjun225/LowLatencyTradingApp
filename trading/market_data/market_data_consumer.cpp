@@ -167,12 +167,12 @@ namespace Trading {
     auto MarketDataConsumer::recvCallback(McastSocket *socket) noexcept -> void {
         const auto is_snapshot = (socket->socket_fd_ == snapshot_mcast_socket_.socket_fd_);
         if (UNLIKELY(is_snapshot && !in_recovery_)) { // market update was read from the snapshot market data stream and we are not in recovery, so we dont need it and discard it.
-        socket->next_rcv_valid_index_ = 0;
+            socket->next_rcv_valid_index_ = 0;
 
-        logger_.log("%:% %() % WARN Not expecting snapshot messages.\n",
-                    __FILE__, __LINE__, __FUNCTION__, Common::getCurrentTimeStr(&time_str_));
+            logger_.log("%:% %() % WARN Not expecting snapshot messages.\n",
+                        __FILE__, __LINE__, __FUNCTION__, Common::getCurrentTimeStr(&time_str_));
 
-        return;
+            return;
         }
 
         if (socket->next_rcv_valid_index_ >= sizeof(Exchange::MDPMarketUpdate)) {

@@ -128,4 +128,13 @@ The `MarketDataConsumer` class we are going to build need couple of important da
 - First, it needs a lock-free `incoming_md_updates_` queue instance of the `Exchange::MEMarketUpdateLFQueue` type, which we defined before. This is meant to be used by `MarketDataConsumer` to publish the `MEMarketUpdate` messages to the trading engine component. 
 - We will maintain a `next_exp_inc_seq_num_` varibale of the `size_t` type, which will be used to make sure that we process updates from the increase mental market data stream in the correct order and detect packet drops on the incremental market data stream. 
 - We will have two mulcast subscriber sockets `incremental_mcast_socket_`. These correspond to the sockets we will use to subscribe to and cosume multicast data from the incremental and the snapshot multicast streams. 
-- Finally, we define a type to queue up messages and order them by their corresponding sequence number. We will use the Standard Template Library, `std::map` type here and parameteize to 
+- Finally, we define a type to queue up messages and order them by their corresponding sequence number. We will use the Standard Template Library, `std::map` type here and parameteize to ...
+
+#### Proceesing market data updates and handling packet drops 
+This section implements important functionality responsible for processing market data updates received on the incremental and the snapshot streams. Market updates on the incremental stream are received during the entire runtime of the `MarketDataConsumer` component. However, data is received and processed from the snapshot stream only when a sequence number gap is detected on the incremental stream, which causes `MarketDataConsumer` to initialize `snapshot_mcast_socket_` and subscribe to the snapshot multicast stream. Remember that in the constructor of `MarketDataConsumer`, we intentionally did not fully initialize `snapshot_mcast_socket` as we did with the `incremental_mcast_socket_`. The important thing to understand here is that data on the snapshot socket is only received when we are in recovery mode and not otherwise.
+
+Otherwise, we proceed further and read `Exchange::MDPMarketUpdate` messages from the socket buffer using the same code 
+that we have seen before. We go through the data contained in the socket->rcv_buffer_ buffer and read it in chunks of size equal to the size of Exchange::MDPMarketUpdate.
+The goal here is to read as many full MDPMarketUpdate messages as possible
+until we have read them all from the buffer. We use reinterpreter_cast to convert the data in the buffer to and object of the 
+Exchagne::MDPMarketUpdate type
