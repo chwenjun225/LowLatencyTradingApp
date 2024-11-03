@@ -1,4 +1,24 @@
-﻿# XÂY DỰNG ỨNG DỤNG GIAO DỊCH ĐIỆN TỬ ĐỘ TRỄ THẤP VỚI C++
+﻿# Lập trình hệ thống C++ bao gồm 
+## I. Quản lý bộ nhớ 
+- Hiểu và sử dụng con trỏ, cấp phát bộ nhớ với các lệnh như `new`, `delete` `malloc`, `free` để có thể quản lý hiệu quả tài nguyên bộ nhớ của ứng dụng.
+- ...
+## II. Xử lý File I/O
+- Sử dụng các lệnh thao tác hệ thống với tập tin, thư mục, cũng như các thư viện trong C++ để đọc, ghi và xử lý dữ liệu trên đĩa, ổ cứng.
+- ...
+## III. Quản lý tiến trình và luồng (Process và Threads)
+- Viết chương trình có khả năng điều khiển nhiều luồng và tiến trình, tối ưu hóa cho các hệ thống đa nhiệm và đa xử lý.
+- ...
+## IV. Lập trình mạng (Networking)
+- Làm việc với giao thức mạng, xây dựng ứng dụng mạng như máy chủ, máy khách và xử lý kết nối, dữ liệu truyền tải trên mạng.
+- ...
+## V. Tương tác với thiết bị phần cứng 
+- Viết code để điều khiển hoặc truy xuất thông tin từ thiết bị, sử dụng các lệnh hệ thống và API đặc thù cho phần cứng.
+- ...
+## VI. Quản lý tài nguyên 
+- Tối ưu hóa và phân bổ tài nguyên hệ thống, bao gồm cả việc giảm thiểu tài nguyên bị chiếm dụng và đảm bảo tính an toàn cho bộ nhớ.
+- ... 
+
+# XÂY DỰNG ỨNG DỤNG GIAO DỊCH ĐIỆN TỬ ĐỘ TRỄ THẤP VỚI C++
 
 ## Chapter 4: Xây dựng các khối block C++ cho các ứng dụng có độ trễ thấp
 Trong chương này, chúng ta sẽ đề cập đến các chủ đề như sau:
@@ -138,3 +158,4 @@ that we have seen before. We go through the data contained in the socket->rcv_bu
 The goal here is to read as many full MDPMarketUpdate messages as possible
 until we have read them all from the buffer. We use reinterpreter_cast to convert the data in the buffer to and object of the 
 Exchagne::MDPMarketUpdate type
+
