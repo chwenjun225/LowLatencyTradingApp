@@ -14,50 +14,49 @@
 using namespace Common;
 
 namespace Exchange {
-    class SnapshotSynthesizer {
-        public:
-            SnapshotSynthesizer(
-                MDPMarketUpdateLFQueue *market_updates, 
-                const std::string &iface, 
-                const std::string &snapshot_ip, 
-                int snapshot_port
-            );
-            ~SnapshotSynthesizer();
+  class SnapshotSynthesizer {
+  public:
+    SnapshotSynthesizer(MDPMarketUpdateLFQueue *market_updates, const std::string &iface,
+                        const std::string &snapshot_ip, int snapshot_port);
 
-            auto start() -> void;
-            auto stop() -> void;
+    ~SnapshotSynthesizer();
 
-            auto addToSnapshot(const MDPMarketUpdate *market_update);
-            auto publishSnapshot();
+    auto start() -> void;
 
-            auto run() -> void;
+    auto stop() -> void;
 
-            // Deleted default, copy & move constructors and assignment-operators.
-            SnapshotSynthesizer() = delete;
+    auto addToSnapshot(const MDPMarketUpdate *market_update);
 
-            SnapshotSynthesizer(const SnapshotSynthesizer &) = delete;
+    auto publishSnapshot();
 
-            SnapshotSynthesizer(const SnapshotSynthesizer &&) = delete;
+    auto run() -> void;
 
-            SnapshotSynthesizer &operator=(const SnapshotSynthesizer &) = delete;
+    // Deleted default, copy & move constructors and assignment-operators.
+    SnapshotSynthesizer() = delete;
 
-            SnapshotSynthesizer &operator=(const SnapshotSynthesizer &&) = delete;
+    SnapshotSynthesizer(const SnapshotSynthesizer &) = delete;
 
-        private:
-            MDPMarketUpdateLFQueue *snapshot_md_updates_ = nullptr;
+    SnapshotSynthesizer(const SnapshotSynthesizer &&) = delete;
 
-            Logger logger_;
+    SnapshotSynthesizer &operator=(const SnapshotSynthesizer &) = delete;
 
-            volatile bool run_ = false;
+    SnapshotSynthesizer &operator=(const SnapshotSynthesizer &&) = delete;
 
-            std::string time_str_;
+  private:
+    MDPMarketUpdateLFQueue *snapshot_md_updates_ = nullptr;
 
-            McastSocket snapshot_socket_;
+    Logger logger_;
 
-            std::array<std::array<MEMarketUpdate *, ME_MAX_ORDER_IDS>, ME_MAX_TICKERS> ticker_orders_;
-            size_t last_inc_seq_num_ = 0;
-            Nanos last_snapshot_time_ = 0;
+    volatile bool run_ = false;
 
-            MemPool<MEMarketUpdate> order_pool_;
-    };
+    std::string time_str_;
+
+    McastSocket snapshot_socket_;
+
+    std::array<std::array<MEMarketUpdate *, ME_MAX_ORDER_IDS>, ME_MAX_TICKERS> ticker_orders_;
+    size_t last_inc_seq_num_ = 0;
+    Nanos last_snapshot_time_ = 0;
+
+    MemPool<MEMarketUpdate> order_pool_;
+  };
 }

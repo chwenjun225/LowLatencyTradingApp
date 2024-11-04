@@ -5,64 +5,62 @@
 #include "market_data/snapshot_synthesizer.h"
 
 namespace Exchange {
-	class MarketDataPublisher {
-	public:
-		MarketDataPublisher(
-			MEMarketUpdateLFQueue *market_updates, const std::string &iface,
-			const std::string &snapshot_ip, int snapshot_port,
-			const std::string &incremental_ip, int incremental_port
-		);
+  class MarketDataPublisher {
+  public:
+    MarketDataPublisher(MEMarketUpdateLFQueue *market_updates, const std::string &iface,
+                        const std::string &snapshot_ip, int snapshot_port,
+                        const std::string &incremental_ip, int incremental_port);
 
-		~MarketDataPublisher() {
-			stop();
-			using namespace std::literals::chrono_literals;
-			std::this_thread::sleep_for(5s);
-			delete snapshot_synthesizer_;
-			snapshot_synthesizer_ = nullptr;
-		}
+    ~MarketDataPublisher() {
+      stop();
 
-		auto start() {
-			run_ = true;
-			ASSERT(
-				Common::createAndStartThread(
-					-1, "Exchange/MarketDataPublisher", 
-					[this]() { run(); }) != nullptr, 
-					"Failed to start MarketData thread."
-			);
-			snapshot_synthesizer_->start();
-		}
+      using namespace std::literals::chrono_literals;
+      std::this_thread::sleep_for(5s);
 
-		auto stop() -> void {
-			run_ = false;
-			snapshot_synthesizer_->stop();
-		}
+      delete snapshot_synthesizer_;
+      snapshot_synthesizer_ = nullptr;
+    }
 
-		auto run() noexcept -> void;
+    auto start() {
+      run_ = true;
 
-		// Deleted default, copy & move constructors and assignment-operators.
-		MarketDataPublisher() = delete;
+      ASSERT(Common::createAndStartThread(-1, "Exchange/MarketDataPublisher", [this]() { run(); }) != nullptr, "Failed to start MarketData thread.");
 
-		MarketDataPublisher(const MarketDataPublisher &) = delete;
+      snapshot_synthesizer_->start();
+    }
 
-		MarketDataPublisher(const MarketDataPublisher &&) = delete;
+    auto stop() -> void {
+      run_ = false;
 
-		MarketDataPublisher &operator=(const MarketDataPublisher &) = delete;
+      snapshot_synthesizer_->stop();
+    }
 
-		MarketDataPublisher &operator=(const MarketDataPublisher &&) = delete;
+    auto run() noexcept -> void;
 
-	private:
-		size_t next_inc_seq_num_ = 1;
-		MEMarketUpdateLFQueue *outgoing_md_updates_ = nullptr;
+    // Deleted default, copy & move constructors and assignment-operators.
+    MarketDataPublisher() = delete;
 
-		MDPMarketUpdateLFQueue snapshot_md_updates_;
+    MarketDataPublisher(const MarketDataPublisher &) = delete;
 
-		volatile bool run_ = false;
+    MarketDataPublisher(const MarketDataPublisher &&) = delete;
 
-		std::string time_str_;
-		Logger logger_;
+    MarketDataPublisher &operator=(const MarketDataPublisher &) = delete;
 
-		Common::McastSocket incremental_socket_;
+    MarketDataPublisher &operator=(const MarketDataPublisher &&) = delete;
 
-		SnapshotSynthesizer *snapshot_synthesizer_ = nullptr;
-	};
+  private:
+    size_t next_inc_seq_num_ = 1;
+    MEMarketUpdateLFQueue *outgoing_md_updates_ = nullptr;
+
+    MDPMarketUpdateLFQueue snapshot_md_updates_;
+
+    volatile bool run_ = false;
+
+    std::string time_str_;
+    Logger logger_;
+
+    Common::McastSocket incremental_socket_;
+
+    SnapshotSynthesizer *snapshot_synthesizer_ = nullptr;
+  };
 }
