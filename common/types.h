@@ -106,8 +106,13 @@ namespace Common {
 		}
 		return "UNKNOWN";
 	}
-
+	// Converts a `Side` value into an index that can be used to index into an array
+	// Allow to maintain arrays of different types of objects that are indexed by a `Side` value
 	inline constexpr auto sideToIndex(Side side) noexcept {
 		return static_cast<size_t>(side) + 1;
+	}
+	// converts a `Side` value into either a 1 for `Side::BUY` or a -1 for `Side::SELL`
+	inline constexpr auto sideToValue(Side side) noexcept {
+		return static_cast<int>(side);
 	}
 }
