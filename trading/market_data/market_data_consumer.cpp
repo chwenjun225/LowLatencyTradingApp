@@ -122,16 +122,15 @@ namespace Trading {
 		}
 
 		if (!have_complete_incremental) {
-		logger_.log("%:% %() % Returning because have gaps in queued incrementals.\n",
-					__FILE__, __LINE__, __FUNCTION__, Common::getCurrentTimeStr(&time_str_));
-		snapshot_queued_msgs_.clear();
-		return;
+			logger_.log("%:% %() % Returning because have gaps in queued incrementals.\n", __FILE__, __LINE__, __FUNCTION__, Common::getCurrentTimeStr(&time_str_));
+			snapshot_queued_msgs_.clear();
+			return;
 		}
 
 		for (const auto &itr: final_events) {
-		auto next_write = incoming_md_updates_->getNextToWriteTo();
-		*next_write = itr;
-		incoming_md_updates_->updateWriteIndex();
+			auto next_write = incoming_md_updates_->getNextToWriteTo();
+			*next_write = itr;
+			incoming_md_updates_->updateWriteIndex();
 		}
 
 		logger_.log("%:% %() % Recovered % snapshot and % incremental orders.\n", __FILE__, __LINE__, __FUNCTION__,
@@ -147,14 +146,14 @@ namespace Trading {
 	/// Queue up a message in the *_queued_msgs_ containers, first parameter specifies if this update came from the snapshot or the incremental streams.
 	auto MarketDataConsumer::queueMessage(bool is_snapshot, const Exchange::MDPMarketUpdate *request) {
 		if (is_snapshot) {
-		if (snapshot_queued_msgs_.find(request->seq_num_) != snapshot_queued_msgs_.end()) {
-			logger_.log("%:% %() % Packet drops on snapshot socket. Received for a 2nd time:%\n", __FILE__, __LINE__, __FUNCTION__,
-						Common::getCurrentTimeStr(&time_str_), request->toString());
-			snapshot_queued_msgs_.clear();
-		}
-		snapshot_queued_msgs_[request->seq_num_] = request->me_market_update_;
+			if (snapshot_queued_msgs_.find(request->seq_num_) != snapshot_queued_msgs_.end()) {
+				logger_.log("%:% %() % Packet drops on snapshot socket. Received for a 2nd time:%\n", __FILE__, __LINE__, __FUNCTION__,
+							Common::getCurrentTimeStr(&time_str_), request->toString());
+				snapshot_queued_msgs_.clear();
+			}
+			snapshot_queued_msgs_[request->seq_num_] = request->me_market_update_;
 		} else {
-		incremental_queued_msgs_[request->seq_num_] = request->me_market_update_;
+			incremental_queued_msgs_[request->seq_num_] = request->me_market_update_;
 		}
 
 		logger_.log("%:% %() % size snapshot:% incremental:% % => %\n", __FILE__, __LINE__, __FUNCTION__,
@@ -187,21 +186,21 @@ namespace Trading {
 				in_recovery_ = (already_in_recovery || request->seq_num_ != next_exp_inc_seq_num_);
 
 				if (UNLIKELY(in_recovery_)) {
-				if (UNLIKELY(!already_in_recovery)) { // if we just entered recovery, start the snapshot synchonization process by subscribing to the snapshot multicast stream.
-					logger_.log("%:% %() % Packet drops on % socket. SeqNum expected:% received:%\n", __FILE__, __LINE__, __FUNCTION__, Common::getCurrentTimeStr(&time_str_), (is_snapshot ? "snapshot" : "incremental"), next_exp_inc_seq_num_, request->seq_num_);
-					startSnapshotSync();
-				}
+					if (UNLIKELY(!already_in_recovery)) { // if we just entered recovery, start the snapshot synchonization process by subscribing to the snapshot multicast stream.
+						logger_.log("%:% %() % Packet drops on % socket. SeqNum expected:% received:%\n", __FILE__, __LINE__, __FUNCTION__, Common::getCurrentTimeStr(&time_str_), (is_snapshot ? "snapshot" : "incremental"), next_exp_inc_seq_num_, request->seq_num_);
+						startSnapshotSync();
+					}
 
-				queueMessage(is_snapshot, request); // queue up the market data update message and check if snapshot recovery / synchronization can be completed successfully.
+					queueMessage(is_snapshot, request); // queue up the market data update message and check if snapshot recovery / synchronization can be completed successfully.
 				} else if (!is_snapshot) { // not in recovery and received a packet in the correct order and without gaps, process it.
-				logger_.log("%:% %() % %\n", __FILE__, __LINE__, __FUNCTION__, 
-					Common::getCurrentTimeStr(&time_str_), request->toString());
+					logger_.log("%:% %() % %\n", __FILE__, __LINE__, __FUNCTION__, 
+						Common::getCurrentTimeStr(&time_str_), request->toString());
 
-				++next_exp_inc_seq_num_;
+					++next_exp_inc_seq_num_;
 
-				auto next_write = incoming_md_updates_->getNextToWriteTo();
-				*next_write = std::move(request->me_market_update_);
-				incoming_md_updates_->updateWriteIndex();
+					auto next_write = incoming_md_updates_->getNextToWriteTo();
+					*next_write = std::move(request->me_market_update_);
+					incoming_md_updates_->updateWriteIndex();
 				}
 			}
 			memcpy(socket->inbound_data_.data(), socket->inbound_data_.data() + i, socket->next_rcv_valid_index_ - i);
