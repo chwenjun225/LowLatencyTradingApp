@@ -19,3 +19,4 @@ inline auto FATAL(const std::string &msg) noexcept {
 
   exit(EXIT_FAILURE);
 }
+
