@@ -164,6 +164,9 @@ namespace Trading {
 
   /// Process a market data update, the consumer needs to use the socket parameter to figure out whether this came from the snapshot or the incremental stream.
   auto MarketDataConsumer::recvCallback(McastSocket *socket) noexcept -> void {
+    TTT_MEASURE(T7_MarketDataConsumer_UDP_read, logger_);
+
+    START_MEASURE(Trading_MarketDataConsumer_recvCallback);
     const auto is_snapshot = (socket->socket_fd_ == snapshot_mcast_socket_.socket_fd_);
     if (UNLIKELY(is_snapshot && !in_recovery_)) { // market update was read from the snapshot market data stream and we are not in recovery, so we dont need it and discard it.
       socket->next_rcv_valid_index_ = 0;
@@ -202,10 +205,12 @@ namespace Trading {
           auto next_write = incoming_md_updates_->getNextToWriteTo();
           *next_write = std::move(request->me_market_update_);
           incoming_md_updates_->updateWriteIndex();
+          TTT_MEASURE(T8_MarketDataConsumer_LFQueue_write, logger_);
         }
       }
       memcpy(socket->inbound_data_.data(), socket->inbound_data_.data() + i, socket->next_rcv_valid_index_ - i);
       socket->next_rcv_valid_index_ -= i;
     }
+    END_MEASURE(Trading_MarketDataConsumer_recvCallback, logger_);
   }
 }

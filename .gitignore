@@ -1,6 +1,7 @@
 # My files
 from_3rdparty
 CMakePresets.json
+*.Identifier
 
 ##### Windows
 # Windows thumbnail cache files

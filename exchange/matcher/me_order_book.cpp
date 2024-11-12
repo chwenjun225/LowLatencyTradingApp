@@ -19,6 +19,9 @@ namespace Exchange {
     }
   }
 
+  /// Match a new aggressive order with the provided parameters against a passive order held in the bid_itr object and generate client responses and market updates for the match.
+  /// It will update the passive order (bid_itr) based on the match and possibly remove it if fully matched.
+  /// It will return remaining quantity on the aggressive order in the leaves_qty parameter.
   auto MEOrderBook::match(TickerId ticker_id, ClientId client_id, Side side, OrderId client_order_id, OrderId new_market_order_id, MEOrder* itr, Qty* leaves_qty) noexcept {
     const auto order = itr;
     const auto order_qty = order->qty_;
@@ -43,7 +46,9 @@ namespace Exchange {
                         order->price_, order_qty, Priority_INVALID};
       matching_engine_->sendMarketUpdate(&market_update_);
 
+      START_MEASURE(Exchange_MEOrderBook_removeOrder);
       removeOrder(order);
+      END_MEASURE(Exchange_MEOrderBook_removeOrder, (*logger_));
     } else {
       market_update_ = {MarketUpdateType::MODIFY, order->market_order_id_, ticker_id, order->side_,
                         order->price_, order->qty_, order->priority_};
@@ -51,6 +56,8 @@ namespace Exchange {
     }
   }
 
+  /// Check if a new order with the provided attributes would match against existing passive orders on the other side of the order book.
+  /// This will call the match() method to perform the match if there is a match to be made and return the quantity remaining if any on this new order.
   auto MEOrderBook::checkForMatch(ClientId client_id, OrderId client_order_id, TickerId ticker_id, Side side, Price price, Qty qty, Qty new_market_order_id) noexcept {
     auto leaves_qty = qty;
 
@@ -61,7 +68,9 @@ namespace Exchange {
           break;
         }
 
+        START_MEASURE(Exchange_MEOrderBook_match);
         match(ticker_id, client_id, side, client_order_id, new_market_order_id, ask_itr, &leaves_qty);
+        END_MEASURE(Exchange_MEOrderBook_match, (*logger_));
       }
     }
     if (side == Side::SELL) {
@@ -71,32 +80,41 @@ namespace Exchange {
           break;
         }
 
+        START_MEASURE(Exchange_MEOrderBook_match);
         match(ticker_id, client_id, side, client_order_id, new_market_order_id, bid_itr, &leaves_qty);
+        END_MEASURE(Exchange_MEOrderBook_match, (*logger_));
       }
     }
 
     return leaves_qty;
   }
 
+  /// Create and add a new order in the order book with provided attributes.
+  /// It will check to see if this new order matches an existing passive order with opposite side, and perform the matching if that is the case.
   auto MEOrderBook::add(ClientId client_id, OrderId client_order_id, TickerId ticker_id, Side side, Price price, Qty qty) noexcept -> void {
     const auto new_market_order_id = generateNewMarketOrderId();
     client_response_ = {ClientResponseType::ACCEPTED, client_id, ticker_id, client_order_id, new_market_order_id, side, price, 0, qty};
     matching_engine_->sendClientResponse(&client_response_);
 
+    START_MEASURE(Exchange_MEOrderBook_checkForMatch);
     const auto leaves_qty = checkForMatch(client_id, client_order_id, ticker_id, side, price, qty, new_market_order_id);
+    END_MEASURE(Exchange_MEOrderBook_checkForMatch, (*logger_));
 
     if (LIKELY(leaves_qty)) {
       const auto priority = getNextPriority(price);
 
       auto order = order_pool_.allocate(ticker_id, client_id, client_order_id, new_market_order_id, side, price, leaves_qty, priority, nullptr,
                                         nullptr);
+      START_MEASURE(Exchange_MEOrderBook_addOrder);
       addOrder(order);
+      END_MEASURE(Exchange_MEOrderBook_addOrder, (*logger_));
 
       market_update_ = {MarketUpdateType::ADD, new_market_order_id, ticker_id, side, price, leaves_qty, priority};
       matching_engine_->sendMarketUpdate(&market_update_);
     }
   }
 
+  /// Attempt to cancel an order in the order book, issue a cancel-rejection if order does not exist.
   auto MEOrderBook::cancel(ClientId client_id, OrderId order_id, TickerId ticker_id) noexcept -> void {
     auto is_cancelable = (client_id < cid_oid_to_order_.size());
     MEOrder *exchange_order = nullptr;
@@ -115,7 +133,9 @@ namespace Exchange {
       market_update_ = {MarketUpdateType::CANCEL, exchange_order->market_order_id_, ticker_id, exchange_order->side_, exchange_order->price_, 0,
                         exchange_order->priority_};
 
+      START_MEASURE(Exchange_MEOrderBook_removeOrder);
       removeOrder(exchange_order);
+      END_MEASURE(Exchange_MEOrderBook_removeOrder, (*logger_));
 
       matching_engine_->sendMarketUpdate(&market_update_);
     }

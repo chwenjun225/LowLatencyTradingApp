@@ -17,11 +17,16 @@ namespace Trading {
       tcp_socket_.sendAndRecv();
 
       for(auto client_request = outgoing_requests_->getNextToRead(); client_request; client_request = outgoing_requests_->getNextToRead()) {
+        TTT_MEASURE(T11_OrderGateway_LFQueue_read, logger_);
+
         logger_.log("%:% %() % Sending cid:% seq:% %\n", __FILE__, __LINE__, __FUNCTION__,
                     Common::getCurrentTimeStr(&time_str_), client_id_, next_outgoing_seq_num_, client_request->toString());
+        START_MEASURE(Trading_TCPSocket_send);
         tcp_socket_.send(&next_outgoing_seq_num_, sizeof(next_outgoing_seq_num_));
         tcp_socket_.send(client_request, sizeof(Exchange::MEClientRequest));
+        END_MEASURE(Trading_TCPSocket_send, logger_);
         outgoing_requests_->updateReadIndex();
+        TTT_MEASURE(T12_OrderGateway_TCP_write, logger_);
 
         next_outgoing_seq_num_++;
       }
@@ -30,6 +35,9 @@ namespace Trading {
 
   /// Callback when an incoming client response is read, we perform some checks and forward it to the lock free queue connected to the trade engine.
   auto OrderGateway::recvCallback(TCPSocket *socket, Nanos rx_time) noexcept -> void {
+    TTT_MEASURE(T7t_OrderGateway_TCP_read, logger_);
+
+    START_MEASURE(Trading_OrderGateway_recvCallback);
     logger_.log("%:% %() % Received socket:% len:% %\n", __FILE__, __LINE__, __FUNCTION__, Common::getCurrentTimeStr(&time_str_), socket->socket_fd_, socket->next_rcv_valid_index_, rx_time);
 
     if (socket->next_rcv_valid_index_ >= sizeof(Exchange::OMClientResponse)) {
@@ -54,9 +62,11 @@ namespace Trading {
         auto next_write = incoming_responses_->getNextToWriteTo();
         *next_write = std::move(response->me_client_response_);
         incoming_responses_->updateWriteIndex();
+        TTT_MEASURE(T8t_OrderGateway_LFQueue_write, logger_);
       }
       memcpy(socket->inbound_data_.data(), socket->inbound_data_.data() + i, socket->next_rcv_valid_index_ - i);
       socket->next_rcv_valid_index_ -= i;
     }
+    END_MEASURE(Trading_OrderGateway_recvCallback, logger_);
   }
 }

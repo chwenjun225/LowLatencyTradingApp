@@ -31,16 +31,21 @@ namespace Exchange {
         tcp_server_.sendAndRecv();
 
         for (auto client_response = outgoing_responses_->getNextToRead(); outgoing_responses_->size() && client_response; client_response = outgoing_responses_->getNextToRead()) {
+          TTT_MEASURE(T5t_OrderServer_LFQueue_read, logger_);
+
           auto &next_outgoing_seq_num = cid_next_outgoing_seq_num_[client_response->client_id_];
           logger_.log("%:% %() % Processing cid:% seq:% %\n", __FILE__, __LINE__, __FUNCTION__, Common::getCurrentTimeStr(&time_str_),
                       client_response->client_id_, next_outgoing_seq_num, client_response->toString());
 
           ASSERT(cid_tcp_socket_[client_response->client_id_] != nullptr,
                  "Dont have a TCPSocket for ClientId:" + std::to_string(client_response->client_id_));
+          START_MEASURE(Exchange_TCPSocket_send);
           cid_tcp_socket_[client_response->client_id_]->send(&next_outgoing_seq_num, sizeof(next_outgoing_seq_num));
           cid_tcp_socket_[client_response->client_id_]->send(client_response, sizeof(MEClientResponse));
+          END_MEASURE(Exchange_TCPSocket_send, logger_);
 
           outgoing_responses_->updateReadIndex();
+          TTT_MEASURE(T6t_OrderServer_TCP_write, logger_);
 
           ++next_outgoing_seq_num;
         }
@@ -49,6 +54,7 @@ namespace Exchange {
 
     /// Read client request from the TCP receive buffer, check for sequence gaps and forward it to the FIFO sequencer.
     auto recvCallback(TCPSocket *socket, Nanos rx_time) noexcept {
+      TTT_MEASURE(T1_OrderServer_TCP_read, logger_);
       logger_.log("%:% %() % Received socket:% len:% rx:%\n", __FILE__, __LINE__, __FUNCTION__, Common::getCurrentTimeStr(&time_str_),
                   socket->socket_fd_, socket->next_rcv_valid_index_, rx_time);
 
@@ -78,7 +84,9 @@ namespace Exchange {
 
           ++next_exp_seq_num;
 
+          START_MEASURE(Exchange_FIFOSequencer_addClientRequest);
           fifo_sequencer_.addClientRequest(rx_time, request->me_client_request_);
+          END_MEASURE(Exchange_FIFOSequencer_addClientRequest, logger_);
         }
         memcpy(socket->inbound_data_.data(), socket->inbound_data_.data() + i, socket->next_rcv_valid_index_ - i);
         socket->next_rcv_valid_index_ -= i;
@@ -87,7 +95,9 @@ namespace Exchange {
 
     /// End of reading incoming messages across all the TCP connections, sequence and publish the client requests to the matching engine.
     auto recvFinishedCallback() noexcept {
+      START_MEASURE(Exchange_FIFOSequencer_sequenceAndPublish);
       fifo_sequencer_.sequenceAndPublish();
+      END_MEASURE(Exchange_FIFOSequencer_sequenceAndPublish, logger_);
     }
 
     /// Deleted default, copy & move constructors and assignment-operators.

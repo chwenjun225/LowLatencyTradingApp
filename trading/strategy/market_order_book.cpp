@@ -16,6 +16,7 @@ namespace Trading {
     oid_to_order_.fill(nullptr);
   }
 
+  /// Process market data update and update the limit order book.
   auto MarketOrderBook::onMarketUpdate(const Exchange::MEMarketUpdate *market_update) noexcept -> void {
     const auto bid_updated = (bids_by_price_ && market_update->side_ == Side::BUY && market_update->price_ >= bids_by_price_->price_);
     const auto ask_updated = (asks_by_price_ && market_update->side_ == Side::SELL && market_update->price_ <= asks_by_price_->price_);
@@ -24,7 +25,9 @@ namespace Trading {
       case Exchange::MarketUpdateType::ADD: {
         auto order = order_pool_.allocate(market_update->order_id_, market_update->side_, market_update->price_,
                                           market_update->qty_, market_update->priority_, nullptr, nullptr);
+        START_MEASURE(Trading_MarketOrderBook_addOrder);
         addOrder(order);
+        END_MEASURE(Trading_MarketOrderBook_addOrder, (*logger_));
       }
         break;
       case Exchange::MarketUpdateType::MODIFY: {
@@ -34,7 +37,9 @@ namespace Trading {
         break;
       case Exchange::MarketUpdateType::CANCEL: {
         auto order = oid_to_order_.at(market_update->order_id_);
+        START_MEASURE(Trading_MarketOrderBook_removeOrder);
         removeOrder(order);
+        END_MEASURE(Trading_MarketOrderBook_removeOrder, (*logger_));
       }
         break;
       case Exchange::MarketUpdateType::TRADE: {
@@ -42,7 +47,7 @@ namespace Trading {
         return;
       }
         break;
-      case Exchange::MarketUpdateType::CLEAR: {
+      case Exchange::MarketUpdateType::CLEAR: { // Clear the full limit order book and deallocate MarketOrdersAtPrice and MarketOrder objects.
         for (auto &order: oid_to_order_) {
           if (order)
             order_pool_.deallocate(order);
@@ -70,7 +75,9 @@ namespace Trading {
         break;
     }
 
+    START_MEASURE(Trading_MarketOrderBook_updateBBO);
     updateBBO(bid_updated, ask_updated);
+    END_MEASURE(Trading_MarketOrderBook_updateBBO, (*logger_));
 
     logger_->log("%:% %() % % %", __FILE__, __LINE__, __FUNCTION__,
                  Common::getCurrentTimeStr(&time_str_), market_update->toString(), bbo_.toString());
