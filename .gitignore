@@ -2,6 +2,7 @@
 from_3rdparty
 CMakePresets.json
 *.Identifier
+cmake-build-release/
 
 ##### Windows
 # Windows thumbnail cache files
