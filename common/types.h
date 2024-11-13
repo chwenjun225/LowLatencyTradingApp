@@ -12,7 +12,8 @@ namespace Common {
 	/// Trading instruments / TickerIds from [0, ME_MAX_TICKERS].
 	constexpr size_t ME_MAX_TICKERS = 8;
 
-	/// Maximum size of lock free queues used to transfer client requests, client responses and market updates between components.
+	/// Maximum size of lock free queues used to transfer client requests, client responses 
+	/// and market updates between components.
 	constexpr size_t ME_MAX_CLIENT_UPDATES = 256 * 1024;
 	constexpr size_t ME_MAX_MARKET_UPDATES = 256 * 1024;
 
@@ -92,12 +93,7 @@ namespace Common {
 		return std::to_string(priority);
 	}
 
-	enum class Side : int8_t {
-		INVALID = 0,
-		BUY = 1,
-		SELL = -1,
-		MAX = 2
-	};
+	enum class Side : int8_t {INVALID = 0, BUY = 1, SELL = -1, MAX = 2};
 
 	inline auto sideToString(Side side) -> std::string {
 		switch (side) {
@@ -188,10 +184,10 @@ namespace Common {
 		auto toString() const {
 			std::stringstream ss;
 			ss << "TradeEngineCfg{"
-				 << "clip:" << qtyToString(clip_) << " "
-				 << "thresh:" << threshold_ << " "
-				 << "risk:" << risk_cfg_.toString()
-				 << "}";
+				<< "clip:" << qtyToString(clip_) << " "
+				<< "thresh:" << threshold_ << " "
+				<< "risk:" << risk_cfg_.toString()
+				<< "}";
 
 			return ss.str();
 		}
