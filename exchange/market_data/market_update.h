@@ -59,15 +59,15 @@ namespace Exchange {
 		auto toString() const {
 			std::stringstream ss;
 			ss << "MEMarketUpdate"
-				 << " ["
-				 << " type:" << marketUpdateTypeToString(type_)
-				 << " ticker:" << tickerIdToString(ticker_id_)
-				 << " oid:" << orderIdToString(order_id_)
-				 << " side:" << sideToString(side_)
-				 << " qty:" << qtyToString(qty_)
-				 << " price:" << priceToString(price_)
-				 << " priority:" << priorityToString(priority_)
-				 << "]";
+				<< " ["
+				<< " type:" << marketUpdateTypeToString(type_)
+				<< " ticker:" << tickerIdToString(ticker_id_)
+				<< " oid:" << orderIdToString(order_id_)
+				<< " side:" << sideToString(side_)
+				<< " qty:" << qtyToString(qty_)
+				<< " price:" << priceToString(price_)
+				<< " priority:" << priorityToString(priority_)
+				<< "]";
 			return ss.str();
 		}
 	};
@@ -80,10 +80,10 @@ namespace Exchange {
 		auto toString() const {
 			std::stringstream ss;
 			ss << "MDPMarketUpdate"
-				 << " ["
-				 << " seq:" << seq_num_
-				 << " " << me_market_update_.toString()
-				 << "]";
+				<< " ["
+				<< " seq:" << seq_num_
+				<< " " << me_market_update_.toString()
+				<< "]";
 			return ss.str();
 		}
 	};

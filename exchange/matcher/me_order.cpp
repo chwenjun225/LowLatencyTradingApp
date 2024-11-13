@@ -14,7 +14,6 @@ namespace Exchange {
 			<< "prio:" << priorityToString(priority_) << " "
 			<< "prev:" << orderIdToString(prev_order_ ? prev_order_->market_order_id_ : OrderId_INVALID) << " "
 			<< "next:" << orderIdToString(next_order_ ? next_order_->market_order_id_ : OrderId_INVALID) << "]";
-
 		return ss.str();
 	}
 }

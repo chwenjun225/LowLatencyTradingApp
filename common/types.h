@@ -166,10 +166,10 @@ namespace Common {
 			std::stringstream ss;
 
 			ss << "RiskCfg{"
-				 << "max-order-size:" << qtyToString(max_order_size_) << " "
-				 << "max-position:" << qtyToString(max_position_) << " "
-				 << "max-loss:" << max_loss_
-				 << "}";
+				<< "max-order-size:" << qtyToString(max_order_size_) << " "
+				<< "max-position:" << qtyToString(max_position_) << " "
+				<< "max-loss:" << max_loss_
+				<< "}";
 
 			return ss.str();
 		}

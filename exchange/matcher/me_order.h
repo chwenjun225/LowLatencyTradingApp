@@ -22,13 +22,27 @@ namespace Exchange {
 		MEOrder *prev_order_ = nullptr;
 		MEOrder *next_order_ = nullptr;
 
-		/// Only needed for use with MemPool.
+		/// Only needed for use with MemPool
 		MEOrder() = default;
 
-		MEOrder(TickerId ticker_id, ClientId client_id, OrderId client_order_id, OrderId market_order_id, Side side, Price price,
-										 Qty qty, Priority priority, MEOrder *prev_order, MEOrder *next_order) noexcept
-				: ticker_id_(ticker_id), client_id_(client_id), client_order_id_(client_order_id), market_order_id_(market_order_id), side_(side),
-					price_(price), qty_(qty), priority_(priority), prev_order_(prev_order), next_order_(next_order) {}
+		MEOrder(TickerId ticker_id, 
+			ClientId client_id, 
+			OrderId client_order_id, 
+			OrderId market_order_id, 
+			Side side, 
+			Price price,
+			Qty qty, Priority priority, 
+			MEOrder *prev_order, 
+			MEOrder *next_order
+		) noexcept : ticker_id_(ticker_id), 
+			client_id_(client_id), 
+			client_order_id_(client_order_id), 
+			market_order_id_(market_order_id), 
+			side_(side),
+			price_(price), qty_(qty), 
+			priority_(priority), 
+			prev_order_(prev_order), 
+			next_order_(next_order) {}
 
 		auto toString() const -> std::string;
 	};
