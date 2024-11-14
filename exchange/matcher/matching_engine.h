@@ -13,9 +13,7 @@
 namespace Exchange {
 	class MatchingEngine final {
 	public:
-		MatchingEngine(ClientRequestLFQueue *client_requests,
-									 ClientResponseLFQueue *client_responses,
-									 MEMarketUpdateLFQueue *market_updates);
+		MatchingEngine(ClientRequestLFQueue *client_requests, ClientResponseLFQueue *client_responses, MEMarketUpdateLFQueue *market_updates);
 
 		~MatchingEngine();
 
@@ -81,8 +79,7 @@ namespace Exchange {
 				if (LIKELY(me_client_request)) {
 					TTT_MEASURE(T3_MatchingEngine_LFQueue_read, logger_);
 
-					logger_.log("%:% %() % Processing %\n", __FILE__, __LINE__, __FUNCTION__, Common::getCurrentTimeStr(&time_str_),
-											me_client_request->toString());
+					logger_.log("%:% %() % Processing %\n", __FILE__, __LINE__, __FUNCTION__, Common::getCurrentTimeStr(&time_str_), me_client_request->toString());
 					START_MEASURE(Exchange_MatchingEngine_processClientRequest);
 					processClientRequest(me_client_request);
 					END_MEASURE(Exchange_MatchingEngine_processClientRequest, logger_);

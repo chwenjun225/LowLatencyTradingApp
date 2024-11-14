@@ -98,12 +98,10 @@ namespace Exchange {
 													(new_orders_at_price->side_ == Side::BUY && new_orders_at_price->price_ < target->price_));
 				if (add_after) {
 					target = target->next_entry_;
-					add_after = ((new_orders_at_price->side_ == Side::SELL && new_orders_at_price->price_ > target->price_) ||
-											 (new_orders_at_price->side_ == Side::BUY && new_orders_at_price->price_ < target->price_));
+					add_after = ((new_orders_at_price->side_ == Side::SELL && new_orders_at_price->price_ > target->price_) || (new_orders_at_price->side_ == Side::BUY && new_orders_at_price->price_ < target->price_));
 				}
 				while (add_after && target != best_orders_by_price) {
-					add_after = ((new_orders_at_price->side_ == Side::SELL && new_orders_at_price->price_ > target->price_) ||
-											 (new_orders_at_price->side_ == Side::BUY && new_orders_at_price->price_ < target->price_));
+					add_after = ((new_orders_at_price->side_ == Side::SELL && new_orders_at_price->price_ > target->price_) || (new_orders_at_price->side_ == Side::BUY && new_orders_at_price->price_ < target->price_));
 					if (add_after)
 						target = target->next_entry_;
 				}
@@ -122,8 +120,7 @@ namespace Exchange {
 					target->prev_entry_->next_entry_ = new_orders_at_price;
 					target->prev_entry_ = new_orders_at_price;
 
-					if ((new_orders_at_price->side_ == Side::BUY && new_orders_at_price->price_ > best_orders_by_price->price_) ||
-							(new_orders_at_price->side_ == Side::SELL && new_orders_at_price->price_ < best_orders_by_price->price_)) {
+					if ((new_orders_at_price->side_ == Side::BUY && new_orders_at_price->price_ > best_orders_by_price->price_) || (new_orders_at_price->side_ == Side::SELL && new_orders_at_price->price_ < best_orders_by_price->price_)) {
 						target->next_entry_ = (target->next_entry_ == best_orders_by_price ? new_orders_at_price : target->next_entry_);
 						(new_orders_at_price->side_ == Side::BUY ? bids_by_price_ : asks_by_price_) = new_orders_at_price;
 					}
